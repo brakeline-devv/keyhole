@@ -1,1 +1,80 @@
-<!doctype html><title>Insider Radar</title><a href="/app">dashboard</a>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insider Radar · Insiders, decoded</title>
+<meta name="description" content="Every CEO, CFO and director trade from SEC filings, ranked and explained for your AI agent. Read-only MCP server for Claude and Cursor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="#top"><svg class="mk" viewBox="0 0 34 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="2" y="7" width="15" height="15" rx="3.5" transform="rotate(-12 9.5 14.5)"/><rect x="15" y="3" width="15" height="15" rx="3.5" transform="rotate(14 22.5 10.5)"/></svg>Insider Radar</a>
+  <nav class="links"><a href="#how">How it works</a><a href="https://github.com/" target="_blank" rel="noopener" id="gh">Visit our GitHub</a><a href="#findings">This week's findings</a></nav>
+  <a class="pill" href="#install">Get started <svg viewBox="0 0 10 16"><path d="M2 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <video class="hero-video" src="media/hero.mp4" poster="media/hero.jpg" autoplay muted loop playsinline></video>
+    <div class="hero-copy">
+      <h1>Insiders,<br>decoded</h1>
+      <p>Every CEO, CFO and director trade, straight from the SEC - ranked and simple</p>
+      <a class="btn" href="#install"><svg viewBox="0 0 20 20"><path d="M4 5l5 5-5 5M11 15h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Add to Claude</a>
+    </div>
+  </section>
+
+  <section class="sec" id="how">
+    <span class="eyebrow">How it works</span>
+    <h2>Thousands of filings a day.<br>Three things you need to know.</h2>
+    <div class="cards three">
+      <article class="card"><span class="n">01</span><h3>Reads every Form 4</h3><p>When a CEO, CFO, director or 10% owner buys or sells their own company's stock, they must report it to the SEC within two business days. Insider Radar reads those filings for you.</p></article>
+      <article class="card"><span class="n">02</span><h3>Splits routine from real</h3><p>Most insider selling is pre-scheduled under a 10b5-1 plan, months ahead. That is routine. A large sale without a plan, or a CEO buying with their own cash, is not.</p></article>
+      <article class="card"><span class="n">03</span><h3>Tells your agent</h3><p>Ask Claude "what are insiders doing in my stocks?" and get a plain answer with every number linked to the original filing. Read-only: it can never place an order.</p></article>
+    </div>
+  </section>
+
+  <section class="sec" id="findings">
+    <span class="eyebrow">This week's findings</span>
+    <h2>Real filings. Real names.<br>What it flagged.</h2>
+    <div class="cards two">
+      <article class="card find red"><div class="row"><span class="tk">NVDA</span><span class="tag">not pre-scheduled</span></div><h3>A director sold $298M in one day</h3><p>Mark Stevens, NVIDIA director, sold 1.36M shares on Sep 18 with no 10b5-1 plan. The CFO and General Counsel sold too, but on schedule.</p></article>
+      <article class="card find red"><div class="row"><span class="tk">KO</span><span class="tag">not pre-scheduled</span></div><h3>Coca-Cola's President sold 37% of his stake</h3><p>Manuel Arroyo sold $5.7M on Nov 17, not under a trading plan.</p></article>
+      <article class="card find green"><div class="row"><span class="tk">PAL</span><span class="tag">cluster buy · 62/100</span></div><h3>Two directors nearly doubled their stakes</h3><p>Rohit Lal (+97%) and James Gattoni (+73%) bought in the open market on the same day, with a third insider buying too.</p></article>
+      <article class="card find"><div class="row"><span class="tk">AAPL · HOOD · PLTR</span><span class="tag">routine</span></div><h3>Lots of selling, nothing to read into</h3><p>98 to 100% of it was pre-scheduled under 10b5-1 plans. Big numbers, no signal.</p></article>
+    </div>
+    <p class="fine">From SEC Form 4 filings, Sep to Nov 2026. Insiders buy and sell for many reasons. Information, not investment advice.</p>
+  </section>
+
+  <section class="sec" id="tools">
+    <span class="eyebrow">For your AI agent</span>
+    <h2>Five tools. One question away.</h2>
+    <div class="tools">
+      <div><code>insider_activity</code><p>Everything insiders did in one company, with a plain-words read.</p></div>
+      <div><code>latest_insider_buys</code><p>The newest open-market buys across the US market, ranked 0 to 100.</p></div>
+      <div><code>latest_insider_sales</code><p>The biggest new sales, flagged when they were not pre-scheduled.</p></div>
+      <div><code>check_holdings</code><p>Your stocks, the ones that need attention first. Reads your Ballast portfolio too.</p></div>
+      <div><code>explain_codes</code><p>What every Form 4 code means, and which ones are real signals.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" id="install">
+    <span class="eyebrow">Get started</span>
+    <h2>One line in Claude.</h2>
+    <pre class="code"><span class="c"># add it to Claude Code</span>
+claude mcp add insider-radar -- npx -y insider-radar-mcp
+
+<span class="c"># then ask</span>
+"What are insiders doing in NVDA, AAPL and KO?"
+"Show me the strongest insider buys this week."</pre>
+    <p class="fine">Free, open source, read-only. Data from SEC EDGAR.</p>
+  </section>
+</main>
+
+<footer class="foot"><a class="brand" href="#top"><svg class="mk" viewBox="0 0 34 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="2" y="7" width="15" height="15" rx="3.5" transform="rotate(-12 9.5 14.5)"/><rect x="15" y="3" width="15" height="15" rx="3.5" transform="rotate(14 22.5 10.5)"/></svg>Insider Radar</a>
+  <span>Not affiliated with the SEC or Robinhood. Not investment advice.</span></footer>
+</body>
+</html>

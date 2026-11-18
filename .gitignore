@@ -4,3 +4,5 @@ data/
 konten-x/
 build/
 tests-log/
+blender/*.blend
+blender/*.blend1
