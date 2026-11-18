@@ -181,34 +181,59 @@ def at(px, py, depth=0.0):
     return Vector((TX + (px - 960) / PX, FACE_Y + depth, TZ - (py - 540) / PX))
 
 # the tower: main block (top at z=0), right slab, blocks and stairs at its foot
-box("tower", (0, 0, -3.5), (2.4, 2.4, 7.0), bevel=0.2)
+bpy.ops.mesh.primitive_cylinder_add(vertices=160, radius=1.2, depth=7.0, location=(0, 0, -3.5))
+tower = bpy.context.object; tower.name = "tower"
+tb = tower.modifiers.new("bev", "BEVEL"); tb.width = 0.07; tb.segments = 5; tb.limit_method = "ANGLE"; tb.angle_limit = math.radians(60)
+tower.data.materials.append(FROST); bpy.ops.object.shade_smooth()
+try: tower.data.shade_smooth()
+except Exception: pass
 box("slab_r", (1.55, 0.35, -3.9), (0.66, 1.4, 7.0), bevel=0.1)
 box("cap_r", (1.55, 0.35, -0.38), (0.72, 1.46, 0.1), bevel=0.03)
-# A real staircase, measured on the reference (treads in frame px -> world):
-#  front flight, stepping DOWN to the right in front of the tower: treads at y 875 / 920 / 960 / 1000 px
-#  (the top one is wide and runs past the tower's left edge: the big coin stands on it),
-#  then the flight turns the corner and climbs BACK along the tower's left side: treads at y 835 / 780 / 735 px.
-FRONT = FACE_Y - 0.05          # front face of the stair block, just in front of the tower
-DEPTH = 1.05                   # how far the front treads stick out
-def step(name, x0, x1, ztop, y0, y1):
-    box(name, ((x0 + x1) / 2, (y0 + y1) / 2, (ztop - 6.5) / 2), (x1 - x0, y1 - y0, ztop + 6.5), bevel=0.03)
+# Spiral staircase around the cylinder, fitted to the reference: theta is measured from the front (camera side)
+# towards the left; each step turns 22 degrees and rises 0.3. The step at theta=31 deg is the one the big coin
+# stands on (z -2.3), the three at 53/75/97 deg are the slabs climbing the left side (z -2.0/-1.7/-1.4).
 fz = lambda py: TZ - (py - 540) / PX
 fx = lambda px: TX + (px - 960) / PX
-step("st_top", fx(1215), fx(1445), fz(875), FRONT - DEPTH, FRONT + 0.6)
-step("st_2", fx(1440), fx(1560), fz(920), FRONT - DEPTH, FRONT + 0.6)
-step("st_3", fx(1555), fx(1702), fz(960), FRONT - DEPTH, FRONT + 0.6)
-step("st_4", fx(1700), fx(1930), fz(1000), FRONT - DEPTH, FRONT + 0.6)
-# climbing back along the left side (each one higher and further back)
-for i, (py, x0) in enumerate([(835, 1262), (780, 1236), (735, 1256)]):
-    y0 = FRONT + 0.0 + i * 0.62
-    step(f"st_l{i}", fx(x0), fx(1342), fz(py), y0, y0 + 0.66)
+R_IN, R_OUT, STEP_DEG, RISE = 1.1, 2.05, 22.0, 0.3
+def wedge(name, th0, th1, ztop, zbot=-7.5, seg=10):
+    """an annular sector (a slice of ring) from the column out to R_OUT, solid down to the floor"""
+    bm = bmesh.new()
+    ring = []
+    for k in range(seg + 1):
+        t = math.radians(th0 + (th1 - th0) * k / seg)
+        ring.append((-math.sin(t), -math.cos(t)))
+    top_o = [bm.verts.new((R_OUT * x, R_OUT * y, ztop)) for x, y in ring]
+    top_i = [bm.verts.new((R_IN * x, R_IN * y, ztop)) for x, y in ring]
+    bot_o = [bm.verts.new((R_OUT * x, R_OUT * y, zbot)) for x, y in ring]
+    bot_i = [bm.verts.new((R_IN * x, R_IN * y, zbot)) for x, y in ring]
+    for k in range(seg):
+        bm.faces.new((top_i[k], top_o[k], top_o[k + 1], top_i[k + 1]))
+        bm.faces.new((bot_i[k + 1], bot_o[k + 1], bot_o[k], bot_i[k]))
+        bm.faces.new((top_o[k], bot_o[k], bot_o[k + 1], top_o[k + 1]))
+        bm.faces.new((top_i[k + 1], bot_i[k + 1], bot_i[k], top_i[k]))
+    bm.faces.new((top_i[0], bot_i[0], bot_o[0], top_o[0]))
+    bm.faces.new((top_o[-1], bot_o[-1], bot_i[-1], top_i[-1]))
+    me = bpy.data.meshes.new(name); bm.to_mesh(me); bm.free()
+    o = bpy.data.objects.new(name, me); sc.collection.objects.link(o)
+    mod = o.modifiers.new("bev", "BEVEL"); mod.width = 0.035; mod.segments = 3; mod.limit_method = "ANGLE"; mod.angle_limit = math.radians(40)
+    o.data.materials.append(FROST)
+    for pl in o.data.polygons: pl.use_smooth = True
+    return o
+STEPS = []
+for i, th in enumerate([-57, -35, -13, 9, 31, 53, 75, 97, 119, 141]):
+    z = -2.3 + (th - 31) / STEP_DEG * RISE
+    wedge(f"step{i}", th - STEP_DEG / 2, th + STEP_DEG / 2, z)
+    STEPS.append((th, z))
+def on_step(th_deg, out=1.55):
+    t = math.radians(th_deg); z = -2.3 + (th_deg - 31) / STEP_DEG * RISE
+    return Vector((-out * math.sin(t), -out * math.cos(t), z))
 bpy.ops.mesh.primitive_uv_sphere_add(segments=64, ring_count=32, radius=0.52, location=(0.0, 0.35, -0.3))
 dome = bpy.context.object; dome.data.materials.append(DOME); bpy.ops.object.shade_smooth()
 
 # ---------------- coins ----------------
-coin("coin_big", (fx(1395), FRONT - 0.55, fz(875) + 0.42), (math.radians(90), 0, math.radians(16)), r=0.42, t=0.1, glyph="$")
-coin("coin_right", (1.3, 0.05, 0.34), (math.radians(90), 0, math.radians(-58)), r=0.46, t=0.1, face=VIOLET_COIN, glyph="$")
-coin("coin_left", (fx(1318), FRONT + 0.75, fz(735) + 0.44), (math.radians(90), 0, math.radians(82)), r=0.44, t=0.09, face=VIOLET_COIN, glyph="")
+big = coin("coin_big", on_step(31, 1.62) + Vector((0, 0, 0.47)), (math.radians(90), 0, math.radians(28)), r=0.47, t=0.11, glyph="$")
+rc = coin("coin_right", (1.3, 0.05, 0.34), (math.radians(90), 0, math.radians(-58)), r=0.46, t=0.1, face=VIOLET_COIN, glyph="$")
+lc = coin("coin_left", on_step(75, 1.6) + Vector((0, 0, 0.45)), (math.radians(90), 0, math.radians(75)), r=0.44, t=0.09, face=VIOLET_COIN, glyph="")
 
 # ---------------- crystal ----------------
 def crystal():
@@ -250,6 +275,19 @@ for i, (px, py, s, d) in enumerate([(960, 350, 0.55, 0), (1125, 640, 0.6, 0), (7
 for i in range(22):
     bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1, radius=random.uniform(0.01, 0.022), location=at(random.uniform(1150, 1900), random.uniform(250, 1050), random.uniform(-1.5, 0.5)))
     bpy.context.object.data.materials.append(SPARK)
+
+# coins: the big one rocks on its step edge, the violet one turns left/right, the top one wobbles
+def wiggle(root, axis, amp_deg, phase=0.0, period=90):
+    base = root.rotation_euler.copy()
+    for f in range(0, LOOP + 1, 3):
+        a = 2 * math.pi * f / period + phase
+        e = base.copy(); e[axis] = base[axis] + math.radians(amp_deg) * math.sin(a)
+        root.rotation_euler = e; root.keyframe_insert("rotation_euler", frame=f)
+    root.rotation_euler = base
+wiggle(big, 1, 5.0)                 # tips left/right in its own plane like it's balancing on the edge
+wiggle(big, 2, 7.0, 1.2)            # and turns a little
+wiggle(lc, 2, 32.0, 0.4)            # violet coin turns, face shows and hides
+wiggle(rc, 2, 9.0, 2.1)
 
 # clouds sway side to side and turn a little, period 90 frames (two cycles per loop, seamless)
 for root, base, ph in CLOUDS:
