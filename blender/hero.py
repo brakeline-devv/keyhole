@@ -98,7 +98,7 @@ def cloud_mat():
     return m
 
 FROST, CRYSTAL = frosted(), crystal_mat()
-SILVER = simple("silver", (0.82, 0.82, 0.90), rough=0.3, metal=0.35)
+SILVER = simple("silver", (0.84, 0.84, 0.92), rough=0.42, metal=0.3)
 RIM = simple("rim", (0.42, 0.30, 1.0), rough=0.25, metal=0.4, emit=0.25)
 VIOLET_COIN = simple("violetcoin", (0.30, 0.22, 1.0), rough=0.3, metal=0.3, emit=0.15)
 DOME = simple("dome", (0.48, 0.40, 1.0), rough=0.4, emit=0.1)
@@ -261,6 +261,7 @@ cry.scale = (0.84, 0.84, 0.8)
 cry.rotation_euler = (math.radians(-6), math.radians(10), 0)
 bpy.ops.mesh.primitive_uv_sphere_add(radius=0.22, location=(0.0, 0.2, 0.62)); puff = bpy.context.object
 puff.data.materials.append(simple("puff", (1, 1, 1), emit=7.0)); puff.scale = (0.9, 0.9, 0.4)
+puff.visible_glossy = False
 bpy.ops.object.light_add(type="POINT", location=(0.0, -0.2, 0.75)); glow = bpy.context.object
 glow.data.energy = 18; glow.data.color = (0.88, 0.85, 1.0); glow.data.shadow_soft_size = 0.5
 spin = bpy.data.objects.new("spin", None); sc.collection.objects.link(spin); cry.parent = spin
@@ -277,9 +278,15 @@ for i, (px, py, s, d) in enumerate([(960, 350, 0.55, 0), (1125, 640, 0.6, 0), (7
                                      (1180, 1075, 0.75, -1.6), (1560, 1095, 0.8, -1.8)]):
     cloud(at(px, py, d), s, seed=i)
 
-for i in range(22):
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1, radius=random.uniform(0.01, 0.022), location=at(random.uniform(1150, 1900), random.uniform(250, 1050), random.uniform(-1.5, 0.5)))
-    bpy.context.object.data.materials.append(SPARK)
+n_sp = 0
+while n_sp < 16:
+    px, py = random.uniform(1100, 1910), random.uniform(120, 1000)
+    if not (py < 470 or px > 1820): continue          # keep clear of the tower, stairs and coins
+    if 1420 < px < 1640 and py < 480: continue          # and of the crystal
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1, radius=random.uniform(0.01, 0.02), location=at(px, py, random.uniform(0.5, 2.5)))
+    sp = bpy.context.object; sp.data.materials.append(SPARK)
+    sp.visible_glossy = False; sp.visible_diffuse = False; sp.visible_transmission = False
+    n_sp += 1
 
 # coins: the big one rocks on its step edge, the violet one turns left/right, the top one wobbles
 def wiggle(root, r, roll_deg=0.0, turn_deg=0.0, phase=0.0, period=90):
