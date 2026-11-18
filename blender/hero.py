@@ -219,21 +219,26 @@ def wedge(name, th0, th1, ztop, zbot=-7.5, seg=10):
     o.data.materials.append(FROST)
     for pl in o.data.polygons: pl.use_smooth = True
     return o
+SPANS = [(-68, -46), (-46, -24), (-24, -2), (-2, 20), (20, 42), (42, 64), (64, 100), (100, 122), (122, 144), (144, 166)]
 STEPS = []
-for i, th in enumerate([-57, -35, -13, 9, 31, 53, 75, 97, 119, 141]):
-    z = -2.3 + (th - 31) / STEP_DEG * RISE
-    wedge(f"step{i}", th - STEP_DEG / 2, th + STEP_DEG / 2, z)
-    STEPS.append((th, z))
-def on_step(th_deg, out=1.55):
-    t = math.radians(th_deg); z = -2.3 + (th_deg - 31) / STEP_DEG * RISE
+for i, (a0, a1) in enumerate(SPANS):
+    z = -2.3 + (i - 4) * RISE
+    wedge(f"step{i}", a0, a1, z)
+    STEPS.append(((a0 + a1) / 2, z))
+def on_step(i, out=1.55):
+    th, z = STEPS[i]; t = math.radians(th)
     return Vector((-out * math.sin(t), -out * math.cos(t), z))
+def tangent_yaw(i):
+    """yaw that lays a standing coin along the step (its face looks along the radius)"""
+    t = math.radians(STEPS[i][0])
+    return math.atan2(math.sin(t), -math.cos(t))
 bpy.ops.mesh.primitive_uv_sphere_add(segments=64, ring_count=32, radius=0.52, location=(0.0, 0.35, -0.3))
 dome = bpy.context.object; dome.data.materials.append(DOME); bpy.ops.object.shade_smooth()
 
 # ---------------- coins ----------------
-big = coin("coin_big", on_step(31, 1.62) + Vector((0, 0, 0.47)), (math.radians(90), 0, math.radians(28)), r=0.47, t=0.11, glyph="$")
-rc = coin("coin_right", (1.3, 0.05, 0.34), (math.radians(90), 0, math.radians(-58)), r=0.46, t=0.1, face=VIOLET_COIN, glyph="$")
-lc = coin("coin_left", on_step(75, 1.6) + Vector((0, 0, 0.45)), (math.radians(90), 0, math.radians(75)), r=0.44, t=0.09, face=VIOLET_COIN, glyph="")
+big = coin("coin_big", on_step(4, 1.62) + Vector((0, 0, 0.47 + 0.005)), (math.radians(90), 0, math.radians(28)), r=0.47, t=0.11, glyph="$")
+rc = coin("coin_right", (1.55, 0.25, -0.33 + 0.46 + 0.005), (math.radians(90), 0, math.radians(-58)), r=0.46, t=0.1, face=VIOLET_COIN, glyph="$")
+lc = coin("coin_left", on_step(6, 1.62) + Vector((0, 0, 0.42 + 0.005)), (math.radians(90), 0, tangent_yaw(6)), r=0.42, t=0.09, face=VIOLET_COIN, glyph="")
 
 # ---------------- crystal ----------------
 def crystal():
@@ -277,17 +282,23 @@ for i in range(22):
     bpy.context.object.data.materials.append(SPARK)
 
 # coins: the big one rocks on its step edge, the violet one turns left/right, the top one wobbles
-def wiggle(root, axis, amp_deg, phase=0.0, period=90):
-    base = root.rotation_euler.copy()
+def wiggle(root, r, roll_deg=0.0, turn_deg=0.0, phase=0.0, period=90):
+    """roll = the coin rocks in its own plane around the point touching the step (so it never sinks or floats);
+    turn = it swivels around the vertical through that point"""
+    base_loc, base_rot = root.location.copy(), root.rotation_euler.copy()
+    contact = base_loc - Vector((0, 0, r))
     for f in range(0, LOOP + 1, 3):
         a = 2 * math.pi * f / period + phase
-        e = base.copy(); e[axis] = base[axis] + math.radians(amp_deg) * math.sin(a)
-        root.rotation_euler = e; root.keyframe_insert("rotation_euler", frame=f)
-    root.rotation_euler = base
-wiggle(big, 1, 5.0)                 # tips left/right in its own plane like it's balancing on the edge
-wiggle(big, 2, 7.0, 1.2)            # and turns a little
-wiggle(lc, 2, 32.0, 0.4)            # violet coin turns, face shows and hides
-wiggle(rc, 2, 9.0, 2.1)
+        roll = math.radians(roll_deg) * math.sin(a); turn = math.radians(turn_deg) * math.sin(a + 1.1)
+        yaw = base_rot.z + turn
+        side = Vector((math.cos(yaw), math.sin(yaw), 0))          # the disc's in-plane horizontal direction
+        root.location = contact + Vector((0, 0, r * math.cos(roll))) + side * (r * math.sin(roll)) * 0.0
+        root.rotation_euler = (base_rot.x, roll, yaw)
+        root.keyframe_insert("location", frame=f); root.keyframe_insert("rotation_euler", frame=f)
+    root.location, root.rotation_euler = base_loc, base_rot
+wiggle(big, 0.47, roll_deg=4.0, turn_deg=6.0)          # balances on its step
+wiggle(lc, 0.42, roll_deg=3.0, turn_deg=12.0, phase=0.4) # turns a little on its landing, clears both walls
+wiggle(rc, 0.46, roll_deg=2.0, turn_deg=8.0, phase=2.1)
 
 # clouds sway side to side and turn a little, period 90 frames (two cycles per loop, seamless)
 for root, base, ph in CLOUDS:
