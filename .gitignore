@@ -1,0 +1,6 @@
+node_modules/
+data/
+*.log
+konten-x/
+build/
+tests-log/

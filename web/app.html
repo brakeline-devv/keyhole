@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insider Radar · Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="bar">
+  <a class="logo" href="/"><span class="dot"></span>insider radar</a>
+  <form id="search" class="search"><input id="q" placeholder="Ticker, e.g. NVDA" autocomplete="off" spellcheck="false"><button>Look up</button></form>
+  <span class="status" id="status">SEC Form 4 filings · read-only</span>
+</header>
+
+<main class="wrap">
+  <section class="card" id="co" hidden>
+    <div class="cohead"><div><h2 id="coName"></h2><small id="coMeta"></small></div><div class="days" id="days"><button data-d="90">90d</button><button data-d="180" class="on">180d</button><button data-d="365">1y</button></div></div>
+    <p class="read" id="coRead"></p>
+    <div class="kpis" id="coKpis"></div>
+    <div class="scroll"><table id="coTrades"></table></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>Latest insider buys <small id="buysWin">reading the newest filings…</small></h2>
+      <p class="hint">Open-market buys only: insiders spending their own cash at the market price. Ranked 0-100 by who bought, how much, how much it grew their stake, clusters, and 10b5-1 plans.</p>
+      <div id="buys" class="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    </section>
+    <div class="col">
+      <section class="card">
+        <h2>Check my holdings <small>last 90 days</small></h2>
+        <form id="hold" class="holdf"><input id="ht" value="NVDA AAPL PLTR HOOD TSLA META" spellcheck="false"><button>Check</button></form>
+        <div id="holdings" class="list"></div>
+      </section>
+      <section class="card">
+        <h2>Biggest insider sales <small id="salesWin"></small></h2>
+        <p class="hint">Marked when not pre-scheduled (no 10b5-1 plan): those are the discretionary ones.</p>
+        <div id="sales" class="list"><div class="skel"></div><div class="skel"></div></div>
+      </section>
+    </div>
+  </div>
+  <p class="foot">Data: SEC EDGAR Form 4 filings, as filed. Insiders buy and sell for many reasons; this is information, not investment advice.</p>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
