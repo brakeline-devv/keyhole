@@ -8,12 +8,27 @@ What company insiders (CEOs, CFOs, directors, 10% owners) bought and sold, strai
 - **check_holdings**: your tickers (or your Ballast portfolio), the ones that need attention first
 - **explain_codes**: what each Form 4 code means
 
+## Install
+
 ```
-npm install && npm start      # dashboard on http://localhost:6300/app
-node src/cli.js NVDA          # one company
-node src/cli.js buys          # ranked newest buys
-claude mcp add keyhole -- node /path/to/keyhole/src/cli.js mcp
+claude mcp add keyhole -- npx -y keyhole-mcp
 ```
+
+Cursor / Claude Desktop / any MCP client:
+
+```json
+{ "mcpServers": { "keyhole": { "command": "npx", "args": ["-y", "keyhole-mcp"] } } }
+```
+
+Dashboard and CLI:
+
+```
+npx keyhole-mcp dashboard     # then open http://localhost:6300/app
+npx keyhole-mcp NVDA 90       # one company, last 90 days
+npx keyhole-mcp buys          # newest open-market buys, ranked
+```
+
+From a checkout: `npm install && npm start`.
 
 SEC asks automated tools to declare who they are. Set `SEC_USER_AGENT="Your Name you@example.com"`; the default identifies the tool only. Requests stay under 8 per second and filings are cached on disk.
 
