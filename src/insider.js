@@ -1,4 +1,4 @@
-// Insider Radar core: read Form 4 filings, turn them into trades people can read, score the buys that matter.
+// Keyhole core: read Form 4 filings, turn them into trades people can read, score the buys that matter.
 // Read-only by design: nothing here can place an order.
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -76,7 +76,7 @@ function withScores(all) {
 // everything insiders did in one company over the last `days`
 export async function forTicker(ticker, { days = 180, max = 80 } = {}) {
   const co = await sec.lookup(ticker);
-  if (!co) throw new Error(`unknown ticker ${ticker}: Insider Radar covers US-listed companies that file with the SEC (no crypto, no ETFs)`);
+  if (!co) throw new Error(`unknown ticker ${ticker}: Keyhole covers US-listed companies that file with the SEC (no crypto, no ETFs)`);
   const sub = await sec.submissions(co.cik);
   const r = sub.filings.recent, since = daysAgo(days), list = [];
   for (let i = 0; i < r.form.length && list.length < max; i++) {

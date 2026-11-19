@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// insider-radar               → MCP server on stdio (what Claude / Cursor start)
-// insider-radar dashboard     → dashboard on http://localhost:6300/app
-// insider-radar buys          → newest open-market insider buys, ranked
-// insider-radar NVDA [days]   → what insiders did in one company
+// keyhole               → MCP server on stdio (what Claude / Cursor start)
+// keyhole dashboard     → dashboard on http://localhost:6300/app
+// keyhole buys          → newest open-market insider buys, ranked
+// keyhole NVDA [days]   → what insiders did in one company
 const cmd = process.argv[2] ?? "mcp";
 const money = (n) => "$" + Math.round(n).toLocaleString("en-US");
 if (cmd === "mcp") (await import("./mcp.js")).startMcp();

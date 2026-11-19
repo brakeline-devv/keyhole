@@ -1,4 +1,4 @@
-# Insider Radar (working name)
+# Keyhole
 
 What company insiders (CEOs, CFOs, directors, 10% owners) bought and sold, straight from SEC Form 4 filings, as an MCP server your AI agent can use, plus a dashboard. Read-only: it cannot place orders.
 
@@ -12,7 +12,7 @@ What company insiders (CEOs, CFOs, directors, 10% owners) bought and sold, strai
 npm install && npm start      # dashboard on http://localhost:6300/app
 node src/cli.js NVDA          # one company
 node src/cli.js buys          # ranked newest buys
-claude mcp add insider-radar -- node /path/to/insider-radar/src/cli.js mcp
+claude mcp add keyhole -- node /path/to/keyhole/src/cli.js mcp
 ```
 
 SEC asks automated tools to declare who they are. Set `SEC_USER_AGENT="Your Name you@example.com"`; the default identifies the tool only. Requests stay under 8 per second and filings are cached on disk.

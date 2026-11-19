@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Insider Radar · Insiders, decoded</title>
+<title>Keyhole · Insiders, decoded</title>
+<link rel="icon" href="brand/mark.svg" type="image/svg+xml">
 <meta name="description" content="Every CEO, CFO and director trade from SEC filings, ranked and explained for your AI agent. Read-only MCP server for Claude and Cursor.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +13,7 @@
 </head>
 <body>
 <header class="nav">
-  <a class="brand" href="#top"><svg class="mk" viewBox="0 0 34 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="2" y="7" width="15" height="15" rx="3.5" transform="rotate(-12 9.5 14.5)"/><rect x="15" y="3" width="15" height="15" rx="3.5" transform="rotate(14 22.5 10.5)"/></svg>Insider Radar</a>
+  <a class="brand" href="#top"><img class="mk" src="brand/mark.svg" alt="">Keyhole</a>
   <nav class="links"><a href="#how">How it works</a><a href="https://github.com/" target="_blank" rel="noopener" id="gh">Visit our GitHub</a><a href="#findings">This week's findings</a></nav>
   <a class="pill" href="#install">Get started <svg viewBox="0 0 10 16"><path d="M2 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </header>
@@ -31,7 +32,7 @@
     <span class="eyebrow">How it works</span>
     <h2>Thousands of filings a day.<br>Three things you need to know.</h2>
     <div class="cards three">
-      <article class="card"><span class="n">01</span><h3>Reads every Form 4</h3><p>When a CEO, CFO, director or 10% owner buys or sells their own company's stock, they must report it to the SEC within two business days. Insider Radar reads those filings for you.</p></article>
+      <article class="card"><span class="n">01</span><h3>Reads every Form 4</h3><p>When a CEO, CFO, director or 10% owner buys or sells their own company's stock, they must report it to the SEC within two business days. Keyhole reads those filings for you.</p></article>
       <article class="card"><span class="n">02</span><h3>Splits routine from real</h3><p>Most insider selling is pre-scheduled under a 10b5-1 plan, months ahead. That is routine. A large sale without a plan, or a CEO buying with their own cash, is not.</p></article>
       <article class="card"><span class="n">03</span><h3>Tells your agent</h3><p>Ask Claude "what are insiders doing in my stocks?" and get a plain answer with every number linked to the original filing. Read-only: it can never place an order.</p></article>
     </div>
@@ -65,7 +66,7 @@
     <span class="eyebrow">Get started</span>
     <h2>One line in Claude.</h2>
     <pre class="code"><span class="c"># add it to Claude Code</span>
-claude mcp add insider-radar -- npx -y insider-radar-mcp
+claude mcp add keyhole -- npx -y keyhole-mcp
 
 <span class="c"># then ask</span>
 "What are insiders doing in NVDA, AAPL and KO?"
@@ -74,7 +75,7 @@ claude mcp add insider-radar -- npx -y insider-radar-mcp
   </section>
 </main>
 
-<footer class="foot"><a class="brand" href="#top"><svg class="mk" viewBox="0 0 34 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="2" y="7" width="15" height="15" rx="3.5" transform="rotate(-12 9.5 14.5)"/><rect x="15" y="3" width="15" height="15" rx="3.5" transform="rotate(14 22.5 10.5)"/></svg>Insider Radar</a>
+<footer class="foot"><a class="brand" href="#top"><img class="mk" src="brand/mark.svg" alt="">Keyhole</a>
   <span>Not affiliated with the SEC or Robinhood. Not investment advice.</span></footer>
 </body>
 </html>

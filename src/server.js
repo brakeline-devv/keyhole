@@ -27,5 +27,5 @@ export function startServer(port = Number(process.env.PORT) || 6300) {
       res.writeHead(200, { "content-type": TYPES[extname(f)] || "application/octet-stream", "cache-control": "no-cache" });
       res.end(readFileSync(f));
     } catch (e) { res.writeHead(500, { "content-type": "application/json" }); res.end(JSON.stringify({ error: e.message })); }
-  }).listen(port, "127.0.0.1", () => console.log(`Insider Radar → dashboard http://localhost:${port}/app`));
+  }).listen(port, "127.0.0.1", () => console.log(`Keyhole → dashboard http://localhost:${port}/app`));
 }

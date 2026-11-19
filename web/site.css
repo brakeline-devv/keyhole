@@ -7,7 +7,7 @@ a { color: inherit; text-decoration: none; }
 /* nav, like the reference: logo left, three plain links, a white pill on the right */
 .nav { position: absolute; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; padding: 34px 6.5vw 0; }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 21px; letter-spacing: -.01em; color: var(--ink); }
-.brand .mk { width: 34px; height: 26px; }
+.brand .mk { width: 32px; height: 32px; border-radius: 9px; box-shadow: 0 6px 16px rgba(91,69,245,.25); }
 .links { margin-left: auto; display: flex; gap: 38px; font-size: 15.5px; font-weight: 500; }
 .links a:hover { color: var(--violet); }
 .pill { margin-left: 40px; display: inline-flex; align-items: center; gap: 10px; background: #fff; padding: 11px 18px 11px 20px; border-radius: 12px; font-size: 15px; font-weight: 600; box-shadow: 0 6px 20px rgba(80,60,200,.08); }

@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { cacheFile } from "./paths.js";
 
-const UA = process.env.SEC_USER_AGENT || "InsiderRadar open-source-tool dev@insider-radar.invalid";
+const UA = process.env.SEC_USER_AGENT || "Keyhole open-source-tool dev@keyhole.invalid";
 const GAP_MS = 130;
 let nextSlot = 0;
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));

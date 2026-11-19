@@ -1,4 +1,4 @@
-// Insider Radar dashboard: latest ranked buys, company lookup, holdings check, biggest sales.
+// Keyhole dashboard: latest ranked buys, company lookup, holdings check, biggest sales.
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const money = (n) => (n >= 1e9 ? "$" + (n / 1e9).toFixed(2) + "B" : n >= 1e6 ? "$" + (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? "$" + (n / 1e3).toFixed(0) + "K" : "$" + Math.round(n || 0));

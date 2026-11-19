@@ -1,4 +1,4 @@
-"""Insider Radar hero: a faceted crystal spinning above a frosted white tower with stairs, coins and clouds,
+"""Keyhole hero: a faceted crystal spinning above a frosted white tower with stairs, coins and clouds,
 on a soft lavender background (light, pastel 3D).
 Headless:
   D:/blender.exe -b -P hero.py -- preview <frame> <out.png> [res_pct] [samples]

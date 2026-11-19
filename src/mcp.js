@@ -1,4 +1,4 @@
-// Insider Radar MCP server (stdio): what company insiders (CEOs, CFOs, directors, 10% owners) bought and sold,
+// Keyhole MCP server (stdio): what company insiders (CEOs, CFOs, directors, 10% owners) bought and sold,
 // straight from SEC Form 4 filings. Read-only: it has no tool that can place an order.
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -46,7 +46,7 @@ export async function handle(name, a = {}) {
 }
 
 export async function startMcp() {
-  const server = new Server({ name: "insider-radar", version: "0.1.0" }, { capabilities: { tools: {} } });
+  const server = new Server({ name: "keyhole", version: "0.1.0" }, { capabilities: { tools: {} } });
   server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS }));
   server.setRequestHandler(CallToolRequestSchema, async (req) => {
     try { return out(await handle(req.params.name, req.params.arguments || {})); }
