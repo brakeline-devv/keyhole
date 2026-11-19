@@ -14,7 +14,7 @@
 <body>
 <header class="nav">
   <a class="brand" href="#top"><img class="mk" src="brand/mark.svg" alt="">Keyhole</a>
-  <nav class="links"><a href="#how">How it works</a><a href="https://github.com/brakeline-devv/keyhole" target="_blank" rel="noopener" id="gh">Visit our GitHub</a><a href="#findings">This week's findings</a></nav>
+  <nav class="links"><a href="#how">How it works</a><a href="#engine">The engine</a><a href="#install">Install</a><a href="https://github.com/brakeline-devv/keyhole" target="_blank" rel="noopener" id="gh">Visit our GitHub</a><a href="#findings">This week's findings</a></nav>
   <a class="pill" href="#install">Get started <svg viewBox="0 0 10 16"><path d="M2 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </header>
 
@@ -35,6 +35,45 @@
       <article class="card"><span class="n">01</span><h3>Reads every Form 4</h3><p>When a CEO, CFO, director or 10% owner buys or sells their own company's stock, they must report it to the SEC within two business days. Keyhole reads those filings for you.</p></article>
       <article class="card"><span class="n">02</span><h3>Splits routine from real</h3><p>Most insider selling is pre-scheduled under a 10b5-1 plan, months ahead. That is routine. A large sale without a plan, or a CEO buying with their own cash, is not.</p></article>
       <article class="card"><span class="n">03</span><h3>Tells your agent</h3><p>Ask Claude "what are insiders doing in my stocks?" and get a plain answer with every number linked to the original filing. Read-only: it can never place an order.</p></article>
+    </div>
+  </section>
+
+  <section class="sec" id="engine">
+    <span class="eyebrow">The engine</span>
+    <h2>What happens between the SEC<br>and your answer.</h2>
+    <p class="lead">No AI guessing, no paid data feed. Keyhole is a small open-source program that reads the official filings and does five things, in this order.</p>
+    <ol class="pipe">
+      <li><span class="n">01</span><h3>Fetch</h3><p>Pulls Form 4 filings straight from SEC EDGAR: the company's own filing history, or the live feed of new filings across the whole US market.</p><small>Free official data · no API key · max 8 requests/s · cached on disk</small></li>
+      <li><span class="n">02</span><h3>Parse</h3><p>Reads each filing: who traded (CEO, CFO, director, 10% owner, or a fund), the transaction code, shares, price, and how many shares they hold after.</p><small>P = bought in the market · S = sold in the market · A, M, F, G = grants, option exercises, tax, gifts (not signals)</small></li>
+      <li><span class="n">03</span><h3>Plan check</h3><p>Looks for a 10b5-1 plan: the checkbox on the filing, or a footnote saying the trade was set up months in advance. Those trades are routine.</p><small>Pre-scheduled = routine · no plan = the insider chose this moment</small></li>
+      <li><span class="n">04</span><h3>Score</h3><p>Every open-market buy gets a 0 to 100 score from who bought, how much, how much it grew their stake, and whether other insiders bought too.</p><small>70+ strong · 45+ notable · below 45 minor</small></li>
+      <li><span class="n">05</span><h3>Read</h3><p>Sums it up in plain words per company: net buying, routine selling, or unplanned selling. Every trade links back to the original SEC filing.</p><small>Read-only · it can never place an order</small></li>
+    </ol>
+
+    <div class="score-wrap">
+      <div class="card score-rules">
+        <h3>How a buy is scored</h3>
+        <table>
+          <tr><td>Size of the buy</td><td>up to <b>40</b></td><td class="d">bigger buys score more, on a log scale ($10K = 0, $10M+ = 36 to 40)</td></tr>
+          <tr><td>Who bought</td><td>up to <b>25</b></td><td class="d">CEO, CFO, COO, President, Chair 25 · other officer 18 · director 12 · 10% owner 8 · a fund 4</td></tr>
+          <tr><td>Stake growth</td><td>up to <b>15</b></td><td class="d">+5 for 5% or more · +10 for 20% · +15 for 50%</td></tr>
+          <tr><td>Cluster</td><td>up to <b>20</b></td><td class="d">+10 for each other insider buying the same company</td></tr>
+          <tr><td>10b5-1 plan</td><td><b class="neg">-15</b></td><td class="d">pre-scheduled buys say less</td></tr>
+        </table>
+      </div>
+      <div class="card score-ex">
+        <div class="row"><span class="tk">EQPT</span><span class="tag">notable</span></div>
+        <h3>A real buy from Nov 16, 2026</h3>
+        <p>EquipmentShare's CEO bought $250K of stock in the open market.</p>
+        <ul>
+          <li><span>$250K bought</span><b>+17</b></li>
+          <li><span>CEO</span><b>+25</b></li>
+          <li><span>stake grew 13.2%</span><b>+5</b></li>
+          <li><span>the President bought too</span><b>+10</b></li>
+          <li><span>no 10b5-1 plan</span><b>0</b></li>
+          <li class="tot"><span>score</span><b>57 / 100</b></li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -63,14 +102,64 @@
   </section>
 
   <section class="sec" id="install">
-    <span class="eyebrow">Get started</span>
-    <h2>One line in Claude.</h2>
-    <pre class="code"><span class="c"># add it to Claude Code</span>
-claude mcp add keyhole -- npx -y keyhole-mcp
+    <span class="eyebrow">Install</span>
+    <h2>On npm. One line in Claude.</h2>
+    <p class="lead">Keyhole is published on npm as <code>keyhole-mcp</code>. You need Node.js 18 or newer. Nothing to sign up for, no API key.</p>
 
-<span class="c"># then ask</span>
-"What are insiders doing in NVDA, AAPL and KO?"
-"Show me the strongest insider buys this week."</pre>
+    <div class="npm-grid">
+      <a class="npm-card" href="https://www.npmjs.com/package/keyhole-mcp" target="_blank" rel="noopener">
+        <div class="npm-top"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0h16v16H0V0zm3 3v10h5V5.5h2.5V13H13V3H3z"/></svg><span>npmjs.com</span></div>
+        <div class="npm-name">keyhole-mcp <span class="ver">0.1.0</span></div>
+        <div class="npm-sub">Public · MIT · published Nov 2026</div>
+        <p>See what company insiders buy and sell. SEC Form 4 insider-trading MCP server + dashboard for Claude and AI agents.</p>
+        <div class="npm-install"><span class="lbl">Install</span><code>&gt; npm i keyhole-mcp</code></div>
+        <dl>
+          <div><dt>Version</dt><dd>0.1.0</dd></div>
+          <div><dt>License</dt><dd>MIT</dd></div>
+          <div><dt>Unpacked size</dt><dd>530 kB</dd></div>
+          <div><dt>Total files</dt><dd>19</dd></div>
+          <div class="wide"><dt>Repository</dt><dd>github.com/brakeline-devv/keyhole</dd></div>
+        </dl>
+        <span class="npm-open">Open on npm &rarr;</span>
+      </a>
+
+      <div class="term">
+        <div class="term-bar"><i></i><i></i><i></i><span>terminal</span></div>
+<pre><span class="ps">$</span> npx keyhole-mcp NVDA 90
+<b>NVIDIA CORP (NVDA)</b> <span class="c">· last 90 days · 16 filings</span>
+Insiders only sold: $968M by 3 people, 2% under 10b5-1 plans.
+No open-market buys.
+  2026-09-21 <span class="r">SELL</span> Teter Timothy S. (General Counsel)  $2,773,638 <span class="c">· 10b5-1 plan</span>
+  2026-09-18 <span class="r">SELL</span> Stevens Mark A (Director)        <span class="hl">$297,942,896</span>
+  2026-09-17 <span class="r">SELL</span> Kress Colette (CFO)              $4,461,161 <span class="c">· 10b5-1 plan</span>
+  2026-09-04 <span class="r">SELL</span> Stevens Mark A (Director)         $54,976,302
+
+<span class="ps">$</span> npx keyhole-mcp buys
+<span class="c">newest open-market insider buys · 93 filings read</span>
+ <span class="g">57</span> notable  EQPT  Schlacks Jabbok (CEO)        $249,998 · +13.2% stake
+ <span class="g">54</span> notable  RMIX  Rees-Jones David (Director)  $620,000
+ <span class="g">54</span> notable  EQPT  Schlacks William J. (Pres.)  $145,400 · +14.1% stake</pre>
+      </div>
+    </div>
+
+    <div class="ways">
+      <div class="way">
+        <span class="n">A</span><h3>Claude Code</h3>
+        <div class="cmd"><code>claude mcp add keyhole -- npx -y keyhole-mcp</code><button class="cp" aria-label="Copy"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg></button></div>
+        <p>Then ask: "What are insiders doing in NVDA, AAPL and KO?"</p>
+      </div>
+      <div class="way">
+        <span class="n">B</span><h3>Claude Desktop · Cursor</h3>
+        <div class="cmd"><code>{ "mcpServers": { "keyhole": { "command": "npx", "args": ["-y", "keyhole-mcp"] } } }</code><button class="cp" aria-label="Copy"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg></button></div>
+        <p>Paste into your MCP config file and restart the app.</p>
+      </div>
+      <div class="way">
+        <span class="n">C</span><h3>Dashboard in your browser</h3>
+        <div class="cmd"><code>npx keyhole-mcp dashboard</code><button class="cp" aria-label="Copy"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg></button></div>
+        <p>Then open <b>localhost:6300/app</b>: latest buys, biggest sales, check your own stocks.</p>
+      </div>
+    </div>
+
     <div class="ext"><a href="https://github.com/brakeline-devv/keyhole" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.71 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.83-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"/></svg>GitHub<span>brakeline-devv/keyhole</span></a><a href="https://www.npmjs.com/package/keyhole-mcp" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0h16v16H0V0zm3 3v10h5V5.5h2.5V13H13V3H3z"/></svg>npm<span>keyhole-mcp</span></a></div>
     <p class="fine">Free, open source, read-only. Data from SEC EDGAR.</p>
   </section>
@@ -79,5 +168,11 @@ claude mcp add keyhole -- npx -y keyhole-mcp
 <footer class="foot"><a class="brand" href="#top"><img class="mk" src="brand/mark.svg" alt="">Keyhole</a>
   <nav class="flinks"><a href="https://github.com/brakeline-devv/keyhole" target="_blank" rel="noopener">GitHub</a><a href="https://www.npmjs.com/package/keyhole-mcp" target="_blank" rel="noopener">npm</a></nav>
   <span>Not affiliated with the SEC or Robinhood. Not investment advice.</span></footer>
+<script>
+document.querySelectorAll(".cp").forEach((b) => b.addEventListener("click", async () => {
+  const t = b.previousElementSibling.textContent;
+  try { await navigator.clipboard.writeText(t); b.classList.add("ok"); setTimeout(() => b.classList.remove("ok"), 1200); } catch {}
+}));
+</script>
 </body>
 </html>
