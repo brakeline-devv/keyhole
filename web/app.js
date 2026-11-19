@@ -3,7 +3,7 @@ const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const money = (n) => (n >= 1e9 ? "$" + (n / 1e9).toFixed(2) + "B" : n >= 1e6 ? "$" + (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? "$" + (n / 1e3).toFixed(0) + "K" : "$" + Math.round(n || 0));
 const api = (p) => fetch(p).then((r) => r.json());
-const ring = (s) => { const c = 2 * Math.PI * 24; return `<svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242b" stroke-width="4"/><circle cx="28" cy="28" r="24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - s / 100)}"/></svg>`; };
+const ring = (s) => { const c = 2 * Math.PI * 24; return `<svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="rgba(27,26,60,.08)" stroke-width="4"/><circle cx="28" cy="28" r="24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - s / 100)}"/></svg>`; };
 
 async function loadBuys() {
   const r = await api("/api/buys?min=25000&limit=25");
