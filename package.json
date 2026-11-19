@@ -2,12 +2,46 @@
   "name": "keyhole-mcp",
   "version": "0.1.0",
   "description": "What company insiders (CEOs, CFOs, directors) bought and sold, straight from SEC Form 4 filings. Ranked buy signals, 10b5-1 aware, portfolio check. MCP server + dashboard for AI agents. Read-only.",
-  "keywords": ["mcp", "model-context-protocol", "sec", "edgar", "form-4", "insider-trading", "claude", "agent", "robinhood", "stocks"],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "sec",
+    "edgar",
+    "form-4",
+    "insider-trading",
+    "claude",
+    "agent",
+    "robinhood",
+    "stocks"
+  ],
   "license": "MIT",
   "type": "module",
-  "engines": { "node": ">=20" },
-  "bin": { "keyhole": "src/cli.js" },
-  "files": ["src", "web", "README.md", "LICENSE"],
-  "scripts": { "start": "node src/cli.js dashboard", "mcp": "node src/cli.js mcp", "test": "node --test test/insider.test.js" },
-  "dependencies": { "@modelcontextprotocol/sdk": "^1.32.2" }
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "keyhole": "src/cli.js"
+  },
+  "files": [
+    "src",
+    "web",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node src/cli.js dashboard",
+    "mcp": "node src/cli.js mcp",
+    "test": "node --test test/insider.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brakeline-devv/keyhole.git"
+  },
+  "homepage": "https://github.com/brakeline-devv/keyhole#readme",
+  "bugs": {
+    "url": "https://github.com/brakeline-devv/keyhole/issues"
+  }
 }
